@@ -129,7 +129,7 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
           transition={{ delay: 0.15 }}
           className="text-xs uppercase tracking-[0.45em] text-couro-gold/75 font-light mb-7 font-mono"
         >
-          São Paulo · Artesanal · Desde 2026
+          Ingá-PB · Desde 2024
         </motion.p>
 
         {/* ── Headline massiva — stagger por caractere ── */}
@@ -191,8 +191,8 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
           transition={{ delay: 0.9 }}
           className="text-base md:text-lg text-couro-ivory/55 font-light max-w-md leading-relaxed"
         >
-          Peças artesanais que transcendem o tempo. Cada ponto,
-          cada corte — uma declaração de elegância inabalável.
+          Peças que transcendem o tempo. Cada ponto,
+          cada detalhe — uma declaração de elegância inabalável.
         </motion.p>
       </div>
 

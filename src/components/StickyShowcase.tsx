@@ -17,8 +17,8 @@ const products = [
     price: 450.0,
     category: 'Acessórios · SKU 001',
     description:
-      'Couro legítimo PBR curtido vegetalmente. Costura manual dupla com linha encerada italiana. Acabamento ultra refinado em borda polida à mão.',
-    details: ['Couro Vegetal Brasileiro', 'Costura Manual Dupla', 'Forro em Suede', '5 Compartimentos'],
+      'Couro legítimo. Acabamento ultra refinado.',
+    details: ['Couro Brasileiro', '5 Compartimentos'],
     image:
       'https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1600&auto=format&fit=crop',
     accent: '#C8A96B',

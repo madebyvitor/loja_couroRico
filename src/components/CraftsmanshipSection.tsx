@@ -51,10 +51,10 @@ export function CraftsmanshipSection() {
             <span className="italic text-couro-gold/90 font-light">milímetro</span>
           </h2>
           <p className="text-couro-ivory/70 font-light leading-relaxed text-lg max-w-lg">
-            Cada peça nasce de couro genuíno selecionado a mão, cortado e costurado por artifíces que levam anos refinando sua técnica. Nenhuma máquina substitui a precisão de dedos treinados no trato do couro.
+            Cada peça nasce de couro genuíno.
           </p>
           <p className="text-couro-ivory/50 font-light leading-relaxed max-w-lg">
-            O luxo não está apenas no que você vê — está no aroma, na textura, no peso equilibrado de cada peça que criamos com dedicação absoluta.
+            O luxo não está apenas no que você vê — está no aroma, na textura, no peso equilibrado de cada peça que oferecemos com dedicação absoluta.
           </p>
           
           <div className="pt-6">
