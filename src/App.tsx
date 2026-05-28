@@ -81,7 +81,7 @@ function App() {
                 COURO RICO Editorial
               </h4>
               <p className="text-xs text-couro-ivory/40 uppercase tracking-widest font-mono">
-                São Paulo, Brasil — Desde 2026
+                Ingá, Paraíba — Desde 2024
               </p>
             </div>
           </section>
