@@ -26,7 +26,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="min-h-[100vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pb-20 relative overflow-hidden"
+      className="min-h-[100vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pt-20 pb-20 relative overflow-hidden"
     >
       {/* Background image */}
       <div
