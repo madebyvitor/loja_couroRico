@@ -1,0 +1,84 @@
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(ScrollTrigger);
+
+export function CraftsmanshipSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    // Parallax effect for the image
+    gsap.to(imageRef.current, {
+      yPercent: 20,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+      },
+    });
+
+    // Fade up for the text
+    gsap.from(textRef.current, {
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      scrollTrigger: {
+        trigger: textRef.current,
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+  }, { scope: containerRef });
+
+  return (
+    <section ref={containerRef} id="tradicao" className="py-32 px-6 md:px-12 lg:px-24 bg-couro-black relative overflow-hidden border-t border-couro-gold/10 scroll-mt-20">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 md:gap-24">
+        
+        {/* Asymmetrical Text Column */}
+        <div ref={textRef} className="flex-1 space-y-8 order-2 md:order-1">
+          <div className="inline-flex items-center gap-3">
+            <span className="w-12 h-px bg-couro-gold/50"></span>
+            <span className="text-xs uppercase tracking-[0.3em] text-couro-gold font-mono">Tradição & Herança</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-couro-ivory font-bold leading-tight">
+            Precisão em cada <br />
+            <span className="italic text-couro-gold/90 font-light">milímetro</span>
+          </h2>
+          <p className="text-couro-ivory/70 font-light leading-relaxed text-lg max-w-lg">
+            Cada peça nasce de couro genuíno selecionado a mão, cortado e costurado por artifíces que levam anos refinando sua técnica. Nenhuma máquina substitui a precisão de dedos treinados no trato do couro.
+          </p>
+          <p className="text-couro-ivory/50 font-light leading-relaxed max-w-lg">
+            O luxo não está apenas no que você vê — está no aroma, na textura, no peso equilibrado de cada peça que criamos com dedicação absoluta.
+          </p>
+          
+          <div className="pt-6">
+            <button className="text-xs uppercase tracking-[0.2em] text-couro-ivory hover:text-couro-gold border-b border-transparent hover:border-couro-gold transition-all pb-1 font-semibold">
+              Descubra Nossa História
+            </button>
+          </div>
+        </div>
+
+        {/* Parallax Image Column */}
+        <div className="flex-1 order-1 md:order-2 w-full">
+          <div className="relative aspect-[4/5] md:aspect-[3/4] w-full max-w-md mx-auto overflow-hidden rounded-sm border border-couro-gold/20">
+            {/* The image that moves slower than scroll */}
+            <div 
+              ref={imageRef}
+              className="absolute inset-[-15%] bg-cover bg-center"
+              style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1596541571477-9bf17b81923e?q=80&w=1200&auto=format&fit=crop")' }}
+            />
+            {/* Inner elegant shadow */}
+            <div className="absolute inset-0 shadow-[inset_0_0_50px_rgba(11,11,11,0.5)] pointer-events-none" />
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+}
