@@ -9,7 +9,7 @@ import { Footer } from '@/layouts/Footer'
 import { LoadingScreen } from './components/LoadingScreen'
 import { AtmosphericBackground } from './components/AtmosphericBackground'
 import { HeroSection } from './components/HeroSection'
-import { FeaturedCollection } from './components/FeaturedCollection'
+import { StickyShowcase } from './components/StickyShowcase'
 import { CraftsmanshipSection } from './components/CraftsmanshipSection'
 import { CartDrawer } from './components/CartDrawer'
 
@@ -55,13 +55,23 @@ function App() {
         <Navbar />
 
         {/* Main content */}
-        <main className="relative z-10">
-          <HeroSection />
-          <FeaturedCollection />
-          <CraftsmanshipSection />
+        <main className="relative">
 
-          {/* Editorial quote */}
-          <section className="py-32 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-couro-black via-couro-brown/20 to-couro-black relative">
+          {/* ── Hero: z-0, fica abaixo da vitrine no scroll ── */}
+          <HeroSection isLoading={isLoading} />
+
+          {/* ── Vitrine interativa: z-10, sobe sobre o Hero com parallax ── */}
+          <StickyShowcase />
+
+          {/* ── Seção de artesanato ── */}
+          <section className="relative z-10 bg-couro-black">
+            <CraftsmanshipSection />
+          </section>
+
+          {/* ── Editorial quote ── */}
+          <section
+            className="relative z-10 py-32 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-couro-black via-couro-brown/20 to-couro-black"
+          >
             <div className="max-w-4xl mx-auto text-center">
               <span className="font-serif italic text-2xl md:text-3xl text-couro-gold/80 block mb-6">
                 "O luxo não está na pressa de criar, mas na paciência de refinar cada pequeno milímetro."

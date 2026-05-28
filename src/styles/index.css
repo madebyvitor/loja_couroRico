@@ -30,6 +30,11 @@ body {
   cursor: none; /* Custom cursor ativo */
 }
 
+html {
+  /* Reserva espaço para a scrollbar desde o início — elimina o reflow/flick */
+  scrollbar-gutter: stable;
+}
+
 /* Grain overlay — textura analógica cinematográfica */
 .grain-overlay {
   position: fixed;
