@@ -98,7 +98,7 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
     <section
       id="hero"
       ref={sectionRef}
-      className="min-h-[100vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pt-20 pb-24 relative overflow-hidden z-0"
+      className="min-h-[100svh] flex flex-col justify-end items-center md:items-start px-6 md:px-12 lg:px-24 pt-20 pb-16 md:pb-24 relative overflow-hidden z-0"
     >
       {/* ── Background image with subtle organic float animation ── */}
       <motion.div
@@ -173,7 +173,7 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
       </div>
 
       {/* ── Conteúdo editorial ── */}
-      <div className="max-w-5xl z-10 relative">
+      <div className="max-w-5xl z-10 relative flex flex-col items-center text-center md:items-start md:text-left w-full mt-auto md:mt-0 mb-16 md:mb-0">
 
         {/* Overline — fade simples */}
         <motion.p
@@ -194,7 +194,7 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
         >
           {/* Linha 1 */}
           <motion.span
-            className="block overflow-hidden"
+            className="block overflow-hidden italic font-light"
             variants={lineContainer}
             initial="hidden"
             animate={isVisible ? 'visible' : 'hidden'}
@@ -243,16 +243,34 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
           initial="hidden"
           animate={isVisible ? 'visible' : 'hidden'}
           transition={{ delay: 0.9 }}
-          className="text-base md:text-lg text-couro-ivory/55 font-light max-w-md leading-relaxed"
+          className="text-sm md:text-lg text-couro-ivory/60 font-light max-w-sm md:max-w-md leading-relaxed mx-auto md:mx-0"
         >
           Peças que transcendem o tempo. Cada ponto,
           cada detalhe — uma declaração de elegância inabalável.
         </motion.p>
+
+        {/* Botão Explorar (Mobile) / Oculto no desktop se desejar, mas fica bem na composição */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate={isVisible ? 'visible' : 'hidden'}
+          transition={{ delay: 1.1 }}
+          className="mt-10 md:mt-12 relative flex flex-col items-center md:items-start"
+        >
+          <a
+            href="#vitrine"
+            className="border border-couro-gold/30 text-couro-gold hover:bg-couro-gold hover:text-couro-black transition-colors text-[10px] uppercase tracking-[0.2em] px-8 py-3.5 rounded-[2rem] font-medium"
+          >
+            Explorar Coleção
+          </a>
+          {/* Linha vertical descendo no mobile */}
+          <div className="w-px h-24 bg-gradient-to-b from-couro-gold/20 to-transparent absolute top-full mt-0 md:hidden" />
+        </motion.div>
       </div>
 
-      {/* ── Scroll indicator — único CTA da Hero ── */}
+      {/* ── Scroll indicator — único CTA da Hero no Desktop ── */}
       <motion.div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex-col items-center gap-3 hidden md:flex"
         initial={{ opacity: 0 }}
         animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
         transition={{ delay: 1.6, duration: 0.9 }}

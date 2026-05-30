@@ -64,6 +64,22 @@ input[type="number"] {
   appearance: textfield;
 }
 
+/* ─── Scrollbar Customizado ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0B0B;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(200, 169, 107, 0.2);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 169, 107, 0.4);
+}
+
 
 body {
   background-color: #0B0B0B; /* couro-black */

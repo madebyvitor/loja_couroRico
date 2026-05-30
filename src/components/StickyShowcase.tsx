@@ -187,7 +187,7 @@ function DesktopCard({
   return (
     <div
       id={`product-card-${index}`}
-      className="desktop-card-animate relative flex-shrink-0 w-[400px] h-[600px] rounded-lg overflow-hidden border border-couro-gold/15 bg-couro-brown/10 flex flex-col mx-6"
+      className="desktop-card-animate relative flex-shrink-0 w-[400px] h-[640px] rounded-lg overflow-hidden border border-couro-gold/15 bg-couro-brown/10 flex flex-col mx-6"
     >
       {/* Imagem */}
       <div className="relative h-[280px] flex-shrink-0 overflow-hidden bg-couro-black/40">
