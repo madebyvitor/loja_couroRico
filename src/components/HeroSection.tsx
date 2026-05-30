@@ -100,18 +100,72 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
       ref={sectionRef}
       className="min-h-[100vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pt-20 pb-24 relative overflow-hidden z-0"
     >
-      {/* ── Background image ── */}
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat will-change-transform"
+      {/* ── Background image with subtle organic float animation ── */}
+      <motion.div
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat will-change-transform origin-center"
         style={{
           backgroundImage:
             'url("https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=2500&auto=format&fit=crop")',
+        }}
+        animate={{
+          scale: [1.05, 1.1, 1.05],
+          rotate: [-1, 1, -1]
+        }}
+        transition={{
+          duration: 30,
+          ease: "easeInOut",
+          repeat: Infinity
         }}
       >
         {/* Gradient: escurece o fundo e prepara o overlap suave com a vitrine */}
         <div className="absolute inset-0 bg-gradient-to-t from-couro-black via-couro-black/50 to-couro-black/15" />
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-couro-black to-transparent" />
-      </div>
+      </motion.div>
+
+      {/* ── Luxury rotating gold seal/badge overlaying the hero ── */}
+      <motion.div
+        className="absolute top-1/4 right-8 md:right-24 z-10 hidden sm:block"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+        transition={{ delay: 1.2, duration: 1 }}
+      >
+        <motion.div
+          className="pointer-events-auto cursor-pointer"
+          animate={{ rotate: 360 }}
+          transition={{ ease: "linear", duration: 25, repeat: Infinity }}
+          whileHover={{ scale: 1.08 }}
+        >
+          <svg
+            viewBox="0 0 120 120"
+            className="w-28 h-28 md:w-36 md:h-36 text-couro-gold/80 hover:text-couro-gold transition-colors duration-300"
+          >
+            {/* Outer elegant rings */}
+            <circle cx="60" cy="60" r="54" className="stroke-couro-gold/30 stroke-[0.75] fill-none" />
+            <circle cx="60" cy="60" r="50" className="stroke-couro-gold/15 stroke-[0.5] fill-none" />
+            
+            {/* Circular Text Path */}
+            <path
+              id="badgeTextPath"
+              d="M 60,60 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0"
+              fill="none"
+            />
+            <text className="text-[7.2px] uppercase tracking-[0.18em] fill-couro-gold font-mono font-medium">
+              <textPath href="#badgeTextPath" startOffset="0%">
+                COURO RICO * INGÁ-PB * COURO RICO * INGÁ-PB * 
+              </textPath>
+            </text>
+            
+            {/* Inner Ring with dark backdrop blur */}
+            <circle cx="60" cy="60" r="26" className="stroke-couro-gold/25 stroke-[0.75] fill-couro-black/60" />
+            
+            {/* Central Minimalist Luxury Sparkle Star */}
+            <path
+              d="M 60,47 Q 60,60 47,60 Q 60,60 60,73 Q 60,60 73,60 Q 60,60 60,47 Z"
+              className="fill-couro-gold"
+            />
+          </svg>
+        </motion.div>
+      </motion.div>
 
       {/* ── Radial studio light ── */}
       <div className="absolute inset-0 z-0 pointer-events-none">

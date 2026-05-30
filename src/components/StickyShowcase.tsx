@@ -175,13 +175,7 @@ function MobileShowcase() {
 
 // ─── Layout DESKTOP: horizontal scroll Apple-style ────────────────────────────
 
-/**
- * Cada painel usa layout split:
- *  - Esquerda (45%): conteúdo editorial (texto, preço, CTA)
- *  - Direita (55%): imagem do produto com object-cover moderado
- * Isso evita que a imagem ocupe 100vw e pareça enorme.
- */
-function DesktopPanel({
+function DesktopCard({
   product,
   index,
 }: {
@@ -189,154 +183,85 @@ function DesktopPanel({
   index: number
 }) {
   const { addToCart } = useStore()
-  const panelRef = useRef<HTMLDivElement>(null)
-  const detailsRef = useRef<HTMLDivElement>(null)
-
-  useGSAP(
-    () => {
-      const details = detailsRef.current
-      if (!details) return
-
-      gsap.fromTo(
-        details.querySelectorAll('.panel-animate'),
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.85,
-          stagger: 0.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: panelRef.current,
-            start: 'left 65%',
-            containerAnimation: window.__horizontalScroll,
-            toggleActions: 'play none none reverse',
-          },
-        }
-      )
-    },
-    { scope: panelRef, dependencies: [] }
-  )
 
   return (
     <div
-      ref={panelRef}
-      id={`product-panel-${index}`}
-      className="relative flex-shrink-0 flex items-stretch overflow-hidden"
-      style={{ width: '100vw', height: '100vh' }}
+      id={`product-card-${index}`}
+      className="desktop-card-animate relative flex-shrink-0 w-[400px] h-[600px] rounded-lg overflow-hidden border border-couro-gold/15 bg-couro-brown/10 flex flex-col mx-6"
     >
-      {/* ── Fundo escuro base ── */}
-      <div className="absolute inset-0 bg-couro-black" />
+      {/* Imagem */}
+      <div className="relative h-[280px] flex-shrink-0 overflow-hidden bg-couro-black/40">
+        <img
+          src={product.image}
+          alt={`${product.name} ${product.subtitle}`}
+          className="w-full h-full object-cover object-center block"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-couro-black/90 via-transparent to-transparent pointer-events-none" />
+        
+        {/* SKU */}
+        <span className="absolute top-4 left-4 text-[10px] uppercase tracking-widest text-couro-gold font-mono font-semibold bg-couro-black/50 px-2 py-1 rounded backdrop-blur-sm border border-couro-gold/10">
+          {product.category}
+        </span>
+        
+        {/* Numeração */}
+        <span className="absolute bottom-4 right-4 font-mono text-xs text-couro-ivory/50">
+          0{index + 1}
+        </span>
+      </div>
 
-      {/* ── Layout split: conteúdo esquerda | imagem direita ── */}
-      <div className="relative z-10 flex w-full h-full">
+      {/* Conteúdo */}
+      <div className="p-6 flex flex-col flex-1">
+        <h2 className="font-serif text-3xl text-couro-ivory font-bold leading-tight mb-1">
+          {product.name}
+        </h2>
+        <h3 className="font-serif text-xl text-couro-gold/80 italic leading-tight mb-5">
+          {product.subtitle}
+        </h3>
+        
+        <p className="text-sm text-couro-ivory/55 font-light leading-relaxed mb-6 line-clamp-3">
+          {product.description}
+        </p>
 
-        {/* Lado esquerdo — conteúdo editorial (45%) */}
-        <div
-          ref={detailsRef}
-          className="flex flex-col justify-center px-16 xl:px-24 py-16 flex-shrink-0"
-          style={{ width: '45%' }}
-        >
-          {/* SKU */}
-          <p className="panel-animate text-[10px] uppercase tracking-[0.5em] text-couro-gold/65 font-mono mb-6">
-            {product.category}
-          </p>
+        {/* Atributos */}
+        <ul className="grid grid-cols-2 gap-x-2 gap-y-2 mb-6 mt-auto">
+          {product.details.map((d) => (
+            <li key={d} className="flex items-center gap-1.5 text-xs text-couro-ivory/45">
+              <span
+                className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                style={{ backgroundColor: product.accent }}
+              />
+              <span className="truncate">{d}</span>
+            </li>
+          ))}
+        </ul>
 
-          {/* Nome */}
-          <h2
-            className="panel-animate font-serif text-couro-ivory leading-[0.88] font-bold mb-1"
-            style={{ fontSize: 'clamp(2.8rem, 5vw, 5.5rem)' }}
-          >
-            {product.name}
-          </h2>
-          <h3
-            className="panel-animate font-serif text-couro-gold/80 italic leading-[0.95] mb-8"
-            style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3.8rem)' }}
-          >
-            {product.subtitle}
-          </h3>
-
-          {/* Divisor */}
-          <div
-            className="panel-animate w-10 h-px mb-8"
-            style={{ backgroundColor: product.accent + '60' }}
-          />
-
-          {/* Descrição */}
-          <p className="panel-animate text-sm text-couro-ivory/55 font-light leading-relaxed max-w-xs mb-8">
-            {product.description}
-          </p>
-
-          {/* Atributos */}
-          <ul className="panel-animate grid grid-cols-2 gap-x-6 gap-y-2.5 mb-10">
-            {product.details.map((d) => (
-              <li key={d} className="flex items-center gap-2 text-xs text-couro-ivory/45">
-                <span
-                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: product.accent }}
-                />
-                {d}
-              </li>
-            ))}
-          </ul>
-
-          {/* Preço + CTA */}
-          <div className="panel-animate flex items-center gap-6">
-            <div>
-              <span className="text-[10px] text-couro-ivory/25 uppercase tracking-widest block mb-0.5">
-                Preço
-              </span>
-              <span className="font-serif text-3xl xl:text-4xl text-couro-gold font-bold">
-                R$ {product.price.toFixed(2)}
-              </span>
-            </div>
-
-            <button
-              id={`add-to-cart-${product.id}`}
-              data-cursor="hover"
-              onClick={() =>
-                addToCart({
-                  id: product.id,
-                  name: `${product.name} ${product.subtitle}`,
-                  price: product.price,
-                })
-              }
-              className="group flex items-center gap-3 bg-couro-gold hover:bg-couro-ivory text-couro-black font-semibold text-xs uppercase tracking-[0.15em] px-7 py-4 rounded-sm transition-all duration-300 cursor-none"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              Adicionar
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-            </button>
-          </div>
-
-          {/* Numeração editorial */}
-          <div className="mt-auto pt-12 flex items-center gap-3 opacity-25">
-            <span className="font-mono text-xs tracking-widest text-couro-ivory">
-              0{index + 1}
+        {/* Preço + CTA */}
+        <div className="flex items-center justify-between pt-5 border-t border-couro-gold/10">
+          <div>
+            <span className="text-[10px] text-couro-ivory/30 uppercase tracking-widest block mb-0.5">
+              Preço
             </span>
-            <div className="w-8 h-px bg-couro-gold" />
-            <span className="font-mono text-[10px] tracking-widest text-couro-ivory">
-              0{products.length}
+            <span className="font-serif text-2xl text-couro-gold font-bold">
+              R$ {product.price.toFixed(2)}
             </span>
           </div>
-        </div>
 
-        {/* Lado direito — imagem (55%) */}
-        <div
-          className="relative flex-shrink-0 overflow-hidden"
-          style={{ width: '55%' }}
-        >
-          {/* Imagem com object-cover contida */}
-          <img
-            src={product.image}
-            alt={`${product.name} ${product.subtitle}`}
-            className="absolute inset-0 w-full h-full object-cover object-center"
-            loading={index === 0 ? 'eager' : 'lazy'}
-          />
-          {/* Gradiente esquerda para fundir com a área de texto */}
-          <div className="absolute inset-0 bg-gradient-to-r from-couro-black via-couro-black/20 to-transparent" />
-          {/* Vignette suave nas bordas */}
-          <div className="absolute inset-0 bg-gradient-to-t from-couro-black/40 via-transparent to-couro-black/20" />
+          <button
+            id={`add-to-cart-${product.id}`}
+            data-cursor="hover"
+            onClick={() =>
+              addToCart({
+                id: product.id,
+                name: `${product.name} ${product.subtitle}`,
+                price: product.price,
+              })
+            }
+            className="group flex items-center gap-2 bg-couro-gold hover:bg-couro-ivory text-couro-black font-semibold text-xs uppercase tracking-[0.1em] px-5 py-3 rounded-sm transition-all duration-300 cursor-none"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            Adicionar
+          </button>
         </div>
       </div>
     </div>
@@ -355,32 +280,51 @@ function DesktopShowcase() {
       const section = sectionRef.current
       if (!track || !section) return
 
-      const horizontalScroll = gsap.to(track, {
-        xPercent: -(100 * (products.length - 1)),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          pin: true,
-          scrub: 1.2,
-          start: 'top top',
-          end: () => `+=${window.innerWidth * (products.length - 1)}`,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            if (self.animation) {
-              window.__horizontalScroll = self.animation as gsap.core.Tween
-            }
+      // Animação de rolagem horizontal principal
+      const updateScroll = () => {
+        const scrollWidth = track.scrollWidth - window.innerWidth + (window.innerWidth * 0.1) // Extra padding at the end
+        
+        const horizontalScroll = gsap.to(track, {
+          x: -scrollWidth,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            pin: true,
+            scrub: 1.2,
+            start: 'top top',
+            end: () => `+=${scrollWidth}`,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
           },
-        },
-      })
+        })
+        return horizontalScroll
+      }
+      
+      const anim = updateScroll()
 
-      window.__horizontalScroll = horizontalScroll
+      // Animação de entrada dos cards independentes da rolagem horizontal
+      gsap.fromTo(
+        '.desktop-card-animate',
+        { opacity: 0, x: 50 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 60%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
 
       return () => {
-        horizontalScroll.kill()
+        if (anim) anim.kill()
       }
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [] }
   )
 
   return (
@@ -395,16 +339,29 @@ function DesktopShowcase() {
       <section
         ref={sectionRef}
         id="vitrine"
-        className="relative z-10 bg-couro-black overflow-hidden"
+        className="relative z-10 bg-couro-black overflow-hidden flex flex-col justify-center"
         style={{ height: '100vh' }}
         aria-label="Vitrine de produtos"
       >
-        {/* Label flutuante */}
-        <div className="absolute top-8 right-12 z-20 flex items-center gap-3 pointer-events-none">
-          <span className="text-[9px] uppercase tracking-[0.4em] text-couro-ivory/20 font-mono">
+        {/* Máscara de gradiente para suavizar a entrada/saída dos cards sob o texto */}
+        <div className="absolute inset-y-0 left-0 w-[350px] xl:w-[500px] z-10 bg-gradient-to-r from-couro-black via-couro-black/95 to-transparent pointer-events-none" />
+
+        {/* Cabeçalho Fixo (Alinhado à esquerda e centralizado verticalmente) */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-16 xl:left-24 z-20 pointer-events-none w-[250px] xl:w-[320px]">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-couro-gold/70 font-mono">
             Coleção
           </span>
-          <div className="w-6 h-px bg-couro-gold/20" />
+          <h2 className="font-serif text-4xl xl:text-5xl text-couro-ivory font-bold mt-3 leading-tight drop-shadow-md">
+            Peças em Destaque
+          </h2>
+          <p className="mt-5 text-sm text-couro-ivory/50 font-light leading-relaxed">
+            Uma seleção exclusiva das nossas criações mais refinadas.
+          </p>
+        </div>
+
+        {/* Label flutuante de scroll */}
+        <div className="absolute bottom-12 right-16 xl:right-24 z-20 flex items-center gap-3 pointer-events-none hidden md:flex">
+          <div className="w-12 h-px bg-couro-gold/20" />
           <span className="text-[9px] uppercase tracking-[0.4em] text-couro-gold/40 font-mono">
             Scroll →
           </span>
@@ -413,15 +370,18 @@ function DesktopShowcase() {
         {/* Track horizontal */}
         <div
           ref={trackRef}
-          className="flex h-full will-change-transform"
-          style={{ width: `${products.length * 100}vw` }}
+          className="flex h-full will-change-transform items-center pr-16 xl:pr-24 relative z-0"
+          style={{ width: 'max-content' }}
         >
+          {/* Espaçador para o primeiro card começar depois do título */}
+          <div className="flex-shrink-0 w-[350px] xl:w-[500px]" aria-hidden="true" />
+          
           {products.map((product, index) => (
-            <DesktopPanel key={product.id} product={product} index={index} />
+            <DesktopCard key={product.id} product={product} index={index} />
           ))}
         </div>
 
-        {/* Progress bars */}
+        {/* Progress bars (centralizadas mas levemente deslocadas para direita para equilibrar com o título) */}
         <ProgressBars total={products.length} sectionRef={sectionRef} />
       </section>
     </>

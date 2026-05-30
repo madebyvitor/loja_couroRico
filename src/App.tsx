@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AnimatePresence } from 'motion/react'
 
 // Layouts
@@ -13,7 +14,12 @@ import { StickyShowcase } from './components/StickyShowcase'
 import { CraftsmanshipSection } from './components/CraftsmanshipSection'
 import { CartDrawer } from './components/CartDrawer'
 
-function App() {
+// Admin
+import { ProtectedRoute } from './components/admin/ProtectedRoute'
+
+// ─── Home Page ────────────────────────────────────────────────────────────────
+
+function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
 
   // Bloqueia o scroll enquanto a loading screen estiver visível
@@ -94,6 +100,21 @@ function App() {
         <CartDrawer />
       </div>
     </>
+  )
+}
+
+// ─── App Root ─────────────────────────────────────────────────────────────────
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/admin-panel" element={<ProtectedRoute />} />
+        {/* Fallback: qualquer rota desconhecida redireciona pra home */}
+        <Route path="*" element={<HomePage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

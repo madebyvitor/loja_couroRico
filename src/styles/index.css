@@ -20,6 +20,40 @@
   border: 1px solid rgba(200, 169, 107, 0.2);
 }
 
+@utility admin-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: rgba(245, 241, 235, 0.4);
+  font-family: 'Inter', monospace;
+  margin-bottom: 6px;
+}
+
+@utility admin-input {
+  width: 100%;
+  background-color: rgba(11, 11, 11, 0.5);
+  border: 1px solid rgba(200, 169, 107, 0.15);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #F5F1EB;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+}
+
+@utility admin-input {
+  &:focus {
+    border-color: rgba(200, 169, 107, 0.5);
+  }
+  &::placeholder {
+    color: rgba(245, 241, 235, 0.2);
+  }
+}
+
+
 body {
   background-color: #0B0B0B; /* couro-black */
   color: #F5F1EB; /* couro-ivory */

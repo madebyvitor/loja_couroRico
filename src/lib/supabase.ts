@@ -10,6 +10,24 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
+// ─── Database Types ───────────────────────────────────────────────────────────
+
+export interface Product {
+  id: string
+  name: string
+  description: string | null
+  price: number
+  promotional_price: number | null
+  is_promoted: boolean
+  image_url: string | null
+  created_at: string
+}
+
+export type ProductInsert = Omit<Product, 'id' | 'created_at'>
+export type ProductUpdate = Partial<ProductInsert>
+
+// ─── Client ──────────────────────────────────────────────────────────────────
+
 export const supabase = createClient(
   supabaseUrl ?? '',
   supabaseAnonKey ?? ''
