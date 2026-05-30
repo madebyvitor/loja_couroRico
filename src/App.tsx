@@ -163,11 +163,11 @@ function HomePage() {
           >
             <div className="max-w-4xl mx-auto text-center">
               <span className="font-serif italic text-2xl md:text-3xl text-couro-gold/80 block mb-6">
-                "O luxo não está na pressa de criar, mas na paciência de refinar cada pequeno milímetro."
+                "Qualidade, estilo e autenticidade em cada escolha."
               </span>
               <div className="w-16 h-px bg-couro-gold/30 mx-auto mb-8" />
               <h4 className="font-serif tracking-widest text-sm uppercase text-couro-ivory font-semibold mb-2">
-                COURO RICO Editorial
+                COURO RICO
               </h4>
               <p className="text-xs text-couro-ivory/40 uppercase tracking-widest font-mono">
                 Ingá, Paraíba — Desde 2024
