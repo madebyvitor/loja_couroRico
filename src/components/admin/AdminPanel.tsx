@@ -15,6 +15,7 @@ import {
   AlertCircle,
   Package,
   CheckCircle2,
+  UploadCloud,
 } from 'lucide-react'
 
 // ─── Props ─────────────────────────────────────────────────────────────────────
@@ -80,11 +81,22 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
         }
       : emptyForm()
   )
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(initial?.image_url ?? null)
+  
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleChange = (field: keyof ProductInsert, value: unknown) => {
     setForm((f) => ({ ...f, [field]: value }))
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,21 +108,50 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
     setSaving(true)
     setError(null)
 
+    let finalImageUrl = form.image_url
+
+    // Se o usuário selecionou uma nova foto, fazemos upload
+    if (imageFile) {
+      const fileExt = imageFile.name.split('.').pop()
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+      
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(fileName, imageFile, {
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        setError('Erro ao enviar imagem. Verifique se o bucket "products" foi criado no Supabase e está público.')
+        setSaving(false)
+        return
+      }
+
+      // Resgata a URL pública após o upload bem-sucedido
+      const { data: publicUrlData } = supabase.storage
+        .from('products')
+        .getPublicUrl(fileName)
+
+      finalImageUrl = publicUrlData.publicUrl
+    }
+
     const payload: ProductInsert = {
       ...form,
       promotional_price: form.promotional_price && form.promotional_price > 0
         ? form.promotional_price
         : null,
-      image_url: form.image_url?.trim() || null,
+      image_url: finalImageUrl,
       description: form.description?.trim() || null,
     }
 
-    const { error } = isEditing
+    const { error: dbError } = isEditing
       ? await supabase.from('products').update(payload).eq('id', initial!.id)
       : await supabase.from('products').insert(payload)
 
-    if (error) {
-      setError('Erro ao salvar. Verifique as credenciais do Supabase.')
+    if (dbError) {
+      setError('Erro ao salvar. Verifique as credenciais do banco.')
       setSaving(false)
       return
     }
@@ -232,23 +273,30 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
             </button>
           </div>
 
-          {/* Image URL */}
+          {/* Image Upload */}
           <div>
-            <label className="admin-label">URL da Imagem</label>
-            <input
-              type="url"
-              value={form.image_url ?? ''}
-              onChange={(e) => handleChange('image_url', e.target.value)}
-              placeholder="https://..."
-              className="admin-input"
-            />
+            <label className="admin-label">Imagem do Produto</label>
+            <div className="relative group">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              />
+              <div className="admin-input flex flex-col items-center justify-center gap-2 border-dashed border-couro-gold/30 text-couro-ivory/50 group-hover:text-couro-gold group-hover:bg-couro-gold/5 transition-all py-6 bg-couro-black/30">
+                <UploadCloud className="w-6 h-6 mb-1" />
+                <span className="text-xs uppercase tracking-widest text-center px-4">
+                  {imageFile ? imageFile.name : 'Clique ou arraste uma foto'}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Preview de imagem */}
-          {form.image_url && (
-            <div className="rounded overflow-hidden border border-couro-gold/15 aspect-video bg-couro-black/50">
+          {imagePreview && (
+            <div className="rounded overflow-hidden border border-couro-gold/15 aspect-video bg-couro-black/50 relative">
               <img
-                src={form.image_url}
+                src={imagePreview}
                 alt="Preview"
                 className="w-full h-full object-cover"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}

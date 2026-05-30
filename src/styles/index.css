@@ -53,6 +53,17 @@
   }
 }
 
+/* Esconder spinners de input type="number" globalmente */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield;
+}
+
 
 body {
   background-color: #0B0B0B; /* couro-black */
