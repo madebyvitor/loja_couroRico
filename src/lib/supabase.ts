@@ -21,6 +21,9 @@ export interface Product {
   price: number
   promotional_price: number | null
   is_promoted: boolean
+  is_hero: boolean
+  is_featured: boolean
+  details: string[]
   image_url: string | null
   category: ProductCategory
   created_at: string

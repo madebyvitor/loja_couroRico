@@ -4,52 +4,43 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ShoppingBag } from 'lucide-react'
 import { useStore } from '../store/useStore'
+import { supabase } from '@/lib/supabase'
+import type { Product } from '@/lib/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// ─── Dados dos produtos ───────────────────────────────────────────────────────
+// ─── Cor de acento por categoria ─────────────────────────────────────────────────────────────
 
-const products = [
-  {
-    id: 'carteira-classic',
-    name: 'Carteira',
-    subtitle: '"Classic"',
-    price: 450.0,
-    category: 'Acessórios · SKU 001',
-    description:
-      'Couro legítimo. Acabamento ultra refinado.',
-    details: ['Couro Brasileiro', '5 Compartimentos'],
-    image:
-      'https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1600&auto=format&fit=crop',
-    accent: '#C8A96B',
-  },
-  {
-    id: 'bolsa-elegance',
-    name: 'Bolsa',
-    subtitle: '"Elegance"',
-    price: 1200.0,
-    category: 'Bolsas · SKU 002',
-    description:
-      'Design de alta costura inspirado nas maisons parisienses. Hardware metálico dourado 18k. Alça ajustável em couro full-grain com textura natural.',
-    details: ['Couro Full-Grain', 'Hardware 18k', 'Alça Dupla', 'Bolso Interno Organizador'],
-    image:
-      'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?q=80&w=1600&auto=format&fit=crop',
-    accent: '#B8956B',
-  },
-  {
-    id: 'chapeu-horizon',
-    name: 'Chapéu',
-    subtitle: '"Horizon"',
-    price: 600.0,
-    category: 'Chapéus · SKU 003',
-    description:
-      'Camurça premium de origem controlada. Banda decorativa em couro fosco moldado artesanalmente. Formato fedora atemporal com aba larga.',
-    details: ['Camurça Premium', 'Banda em Couro Fosco', 'Moldado à Mão', 'Aba 6cm'],
-    image:
-      'https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1600&auto=format&fit=crop',
-    accent: '#9A7A52',
-  },
-]
+function accentByCategory(cat: string): string {
+  const map: Record<string, string> = {
+    carteira: '#C8A96B',
+    bolsa: '#B8956B',
+    chapeu: '#9A7A52',
+    acessorio: '#D4B896',
+  }
+  return map[cat.toLowerCase()] ?? '#C8A96B'
+}
+
+// ─── Hook: busca produtos em destaque ─────────────────────────────────────────────────────────
+
+function useFeaturedProducts() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    supabase
+      .from('products')
+      .select('*')
+      .eq('is_featured', true)
+      .limit(3)
+      .then(({ data }) => {
+        setProducts(data ?? [])
+        setLoading(false)
+      })
+  }, [])
+
+  return { products, loading }
+}
 
 // ─── Hook: detecta se é mobile (< 768px) ─────────────────────────────────────
 
@@ -67,10 +58,11 @@ function useIsMobile() {
   return isMobile
 }
 
-// ─── Layout MOBILE: cards verticais ──────────────────────────────────────────
+// ─── Layout MOBILE: cards verticais ─────────────────────────────────────────────────────────────
 
 function MobileShowcase() {
   const { addToCart } = useStore()
+  const { products, loading } = useFeaturedProducts()
 
   return (
     <section id="vitrine" className="relative z-10 bg-couro-black" aria-label="Vitrine de produtos">
@@ -92,82 +84,109 @@ function MobileShowcase() {
           </h2>
         </div>
 
-        {/* Cards verticais */}
-        <div className="flex flex-col gap-8">
-          {products.map((product, index) => (
-            <div
-              key={product.id}
-              className="rounded-lg overflow-hidden border border-couro-gold/15 bg-couro-brown/10"
-            >
-              {/* Imagem do produto — altura fixa e visível */}
-              <div className="relative h-64 overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={`${product.name} ${product.subtitle}`}
-                  className="w-full h-full object-cover"
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-couro-black/80 via-transparent to-transparent" />
-                {/* SKU badge */}
-                <span className="absolute top-4 left-4 text-[10px] uppercase tracking-widest text-couro-gold font-mono font-semibold">
-                  {product.category}
-                </span>
-                {/* Numeração */}
-                <span className="absolute bottom-4 right-4 font-mono text-xs text-couro-ivory/30">
-                  0{index + 1}
-                </span>
-              </div>
-
-              {/* Conteúdo */}
-              <div className="p-6">
-                <h2 className="font-serif text-2xl text-couro-ivory font-bold leading-tight mb-1">
-                  {product.name}
-                </h2>
-                <h3 className="font-serif text-lg text-couro-gold/80 italic leading-tight mb-4">
-                  {product.subtitle}
-                </h3>
-                <p className="text-sm text-couro-ivory/55 font-light leading-relaxed mb-5">
-                  {product.description}
-                </p>
-
-                {/* Atributos */}
-                <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 mb-6">
-                  {product.details.map((d) => (
-                    <li key={d} className="flex items-center gap-2 text-xs text-couro-ivory/45">
-                      <span
-                        className="w-1 h-1 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: product.accent }}
-                      />
-                      {d}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Preço + botão */}
-                <div className="flex items-center justify-between pt-4 border-t border-couro-gold/10">
-                  <div>
-                    <span className="text-[10px] text-couro-ivory/30 uppercase tracking-widest block">
-                      Preço
-                    </span>
-                    <span className="font-serif text-2xl text-couro-gold font-bold">
-                      R$ {product.price.toFixed(2)}
-                    </span>
-                  </div>
-                  <button
-                    id={`add-to-cart-mobile-${product.id}`}
-                    onClick={() =>
-                      addToCart({ id: product.id, name: `${product.name} ${product.subtitle}`, price: product.price })
-                    }
-                    className="flex items-center gap-2 bg-couro-gold text-couro-black font-semibold text-xs uppercase tracking-[0.12em] px-5 py-3.5 rounded-sm active:scale-95 transition-all"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    Adicionar
-                  </button>
+        {/* Loading skeleton */}
+        {loading && (
+          <div className="flex flex-col gap-8">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="rounded-lg overflow-hidden border border-couro-gold/10 bg-couro-brown/5 animate-pulse">
+                <div className="h-64 bg-couro-ivory/5" />
+                <div className="p-6 space-y-3">
+                  <div className="h-4 bg-couro-ivory/10 rounded w-1/2" />
+                  <div className="h-3 bg-couro-ivory/5 rounded w-3/4" />
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && products.length === 0 && (
+          <div className="text-center py-16">
+            <p className="font-serif text-lg text-couro-ivory/30 italic">Nenhum produto em destaque.</p>
+            <p className="text-xs text-couro-ivory/20 mt-1">Configure no painel admin.</p>
+          </div>
+        )}
+
+        {/* Cards verticais */}
+        {!loading && products.length > 0 && (
+          <div className="flex flex-col gap-8">
+            {products.map((product, index) => {
+              const accent = accentByCategory(product.category ?? '')
+              return (
+                <div
+                  key={product.id}
+                  className="rounded-lg overflow-hidden border border-couro-gold/15 bg-couro-brown/10"
+                >
+                  {/* Imagem do produto — altura fixa e visível */}
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={product.image_url ?? ''}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-couro-black/80 via-transparent to-transparent" />
+                    {/* SKU badge */}
+                    <span className="absolute top-4 left-4 text-[10px] uppercase tracking-widest text-couro-gold font-mono font-semibold">
+                      {product.category}
+                    </span>
+                    {/* Numeração */}
+                    <span className="absolute bottom-4 right-4 font-mono text-xs text-couro-ivory/30">
+                      0{index + 1}
+                    </span>
+                  </div>
+
+                  {/* Conteúdo */}
+                  <div className="p-6">
+                    <h2 className="font-serif text-2xl text-couro-ivory font-bold leading-tight mb-4">
+                      {product.name}
+                    </h2>
+                    <p className="text-sm text-couro-ivory/55 font-light leading-relaxed mb-5">
+                      {product.description}
+                    </p>
+
+                    {/* Atributos */}
+                    {product.details && product.details.length > 0 && (
+                      <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 mb-6">
+                        {product.details.map((d) => (
+                          <li key={d} className="flex items-center gap-2 text-xs text-couro-ivory/45">
+                            <span
+                              className="w-1 h-1 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: accent }}
+                            />
+                            {d}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {/* Preço + botão */}
+                    <div className="flex items-center justify-between pt-4 border-t border-couro-gold/10">
+                      <div>
+                        <span className="text-[10px] text-couro-ivory/30 uppercase tracking-widest block">
+                          Preço
+                        </span>
+                        <span className="font-serif text-2xl text-couro-gold font-bold">
+                          R$ {(product.promotional_price ?? product.price).toFixed(2)}
+                        </span>
+                      </div>
+                      <button
+                        id={`add-to-cart-mobile-${product.id}`}
+                        onClick={() =>
+                          addToCart({ id: product.id, name: product.name, price: product.promotional_price ?? product.price })
+                        }
+                        className="flex items-center gap-2 bg-couro-gold text-couro-black font-semibold text-xs uppercase tracking-[0.12em] px-5 py-3.5 rounded-sm active:scale-95 transition-all"
+                      >
+                        <ShoppingBag className="w-4 h-4" />
+                        Adicionar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
     </section>
   )
@@ -179,10 +198,11 @@ function DesktopCard({
   product,
   index,
 }: {
-  product: (typeof products)[0]
+  product: Product
   index: number
 }) {
   const { addToCart } = useStore()
+  const accent = accentByCategory(product.category ?? '')
 
   return (
     <div
@@ -192,8 +212,8 @@ function DesktopCard({
       {/* Imagem */}
       <div className="relative h-[280px] flex-shrink-0 overflow-hidden bg-couro-black/40">
         <img
-          src={product.image}
-          alt={`${product.name} ${product.subtitle}`}
+          src={product.image_url ?? ''}
+          alt={product.name}
           className="w-full h-full object-cover object-center block"
           loading={index === 0 ? 'eager' : 'lazy'}
         />
@@ -212,38 +232,37 @@ function DesktopCard({
 
       {/* Conteúdo */}
       <div className="p-6 flex flex-col flex-1">
-        <h2 className="font-serif text-3xl text-couro-ivory font-bold leading-tight mb-1">
+        <h2 className="font-serif text-3xl text-couro-ivory font-bold leading-tight mb-5">
           {product.name}
         </h2>
-        <h3 className="font-serif text-xl text-couro-gold/80 italic leading-tight mb-5">
-          {product.subtitle}
-        </h3>
         
         <p className="text-sm text-couro-ivory/55 font-light leading-relaxed mb-6 line-clamp-3">
           {product.description}
         </p>
 
         {/* Atributos */}
-        <ul className="grid grid-cols-2 gap-x-2 gap-y-2 mb-6 mt-auto">
-          {product.details.map((d) => (
-            <li key={d} className="flex items-center gap-1.5 text-xs text-couro-ivory/45">
-              <span
-                className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                style={{ backgroundColor: product.accent }}
-              />
-              <span className="truncate">{d}</span>
-            </li>
-          ))}
-        </ul>
+        {product.details && product.details.length > 0 && (
+          <ul className="grid grid-cols-2 gap-x-2 gap-y-2 mb-6 mt-auto">
+            {product.details.map((d) => (
+              <li key={d} className="flex items-center gap-1.5 text-xs text-couro-ivory/45">
+                <span
+                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: accent }}
+                />
+                <span className="truncate">{d}</span>
+              </li>
+            ))}
+          </ul>
+        )}
 
         {/* Preço + CTA */}
-        <div className="flex items-center justify-between pt-5 border-t border-couro-gold/10">
+        <div className="flex items-center justify-between pt-5 border-t border-couro-gold/10 mt-auto">
           <div>
             <span className="text-[10px] text-couro-ivory/30 uppercase tracking-widest block mb-0.5">
               Preço
             </span>
             <span className="font-serif text-2xl text-couro-gold font-bold">
-              R$ {product.price.toFixed(2)}
+              R$ {(product.promotional_price ?? product.price).toFixed(2)}
             </span>
           </div>
 
@@ -253,8 +272,8 @@ function DesktopCard({
             onClick={() =>
               addToCart({
                 id: product.id,
-                name: `${product.name} ${product.subtitle}`,
-                price: product.price,
+                name: product.name,
+                price: product.promotional_price ?? product.price,
               })
             }
             className="group flex items-center gap-2 bg-couro-gold hover:bg-couro-ivory text-couro-black font-semibold text-xs uppercase tracking-[0.1em] px-5 py-3 rounded-sm transition-all duration-300 cursor-none"
@@ -273,12 +292,13 @@ function DesktopCard({
 function DesktopShowcase() {
   const sectionRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
+  const { products, loading } = useFeaturedProducts()
 
   useGSAP(
     () => {
       const track = trackRef.current
       const section = sectionRef.current
-      if (!track || !section) return
+      if (!track || !section || loading || products.length === 0) return
 
       // Animação de rolagem horizontal principal
       const updateScroll = () => {
@@ -324,7 +344,7 @@ function DesktopShowcase() {
         if (anim) anim.kill()
       }
     },
-    { scope: sectionRef, dependencies: [] }
+    { scope: sectionRef, dependencies: [loading, products.length] }
   )
 
   return (
@@ -376,13 +396,32 @@ function DesktopShowcase() {
           {/* Espaçador para o primeiro card começar depois do título */}
           <div className="flex-shrink-0 w-[350px] xl:w-[500px]" aria-hidden="true" />
           
-          {products.map((product, index) => (
-            <DesktopCard key={product.id} product={product} index={index} />
-          ))}
+          {loading ? (
+            // Skeleton loading
+            [0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[400px] h-[640px] rounded-lg border border-couro-gold/10 bg-couro-ivory/5 mx-6 animate-pulse"
+              />
+            ))
+          ) : products.length === 0 ? (
+            <div className="flex items-center justify-center w-[600px] text-center">
+              <div>
+                <p className="font-serif text-xl text-couro-ivory/30 italic">Nenhum produto em destaque.</p>
+                <p className="text-xs text-couro-ivory/20 mt-2">Configure no painel admin.</p>
+              </div>
+            </div>
+          ) : (
+            products.map((product, index) => (
+              <DesktopCard key={product.id} product={product} index={index} />
+            ))
+          )}
         </div>
 
-        {/* Progress bars (centralizadas mas levemente deslocadas para direita para equilibrar com o título) */}
-        <ProgressBars total={products.length} sectionRef={sectionRef} />
+        {/* Progress bars */}
+        {!loading && products.length > 0 && (
+          <ProgressBars total={products.length} sectionRef={sectionRef} />
+        )}
       </section>
     </>
   )

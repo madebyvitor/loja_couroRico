@@ -16,6 +16,8 @@ import {
   Package,
   CheckCircle2,
   UploadCloud,
+  Star,
+  Sparkles,
 } from 'lucide-react'
 
 // ─── Props ─────────────────────────────────────────────────────────────────────
@@ -32,6 +34,9 @@ const emptyForm = (): ProductInsert => ({
   price: 0,
   promotional_price: null,
   is_promoted: false,
+  is_hero: false,
+  is_featured: false,
+  details: [],
   image_url: '',
   category: 'bolsa',
 })
@@ -65,7 +70,7 @@ function Toast({ message, type }: ToastProps) {
 interface ProductFormProps {
   initial?: Product
   onClose: () => void
-  onSaved: () => void
+  onSaved: (variant?: 'hero' | 'default') => void
 }
 
 function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
@@ -78,6 +83,9 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
           price: initial.price,
           promotional_price: initial.promotional_price,
           is_promoted: initial.is_promoted,
+          is_hero: initial.is_hero,
+          is_featured: initial.is_featured,
+          details: initial.details ?? [],
           image_url: initial.image_url ?? '',
           category: initial.category ?? 'bolsa',
         }
@@ -85,9 +93,21 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
   )
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(initial?.image_url ?? null)
-  
+  const [featuredCount, setFeaturedCount] = useState(0)
+
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Conta quantos produtos já têm is_featured = true
+  useEffect(() => {
+    supabase
+      .from('products')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_featured', true)
+      .then(({ count }) => {
+        setFeaturedCount(count ?? 0)
+      })
+  }, [])
 
   const handleChange = (field: keyof ProductInsert, value: unknown) => {
     setForm((f) => ({ ...f, [field]: value }))
@@ -139,6 +159,18 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
       finalImageUrl = publicUrlData.publicUrl
     }
 
+    // Se este produto está sendo definido como Hero, limpa o hero anterior
+    if (form.is_hero) {
+      const currentId = isEditing ? initial!.id : null
+      const query = supabase.from('products').update({ is_hero: false })
+      const { error: heroError } = currentId
+        ? await query.neq('id', currentId)
+        : await query
+      if (heroError) {
+        console.error('Erro ao limpar hero anterior:', heroError)
+      }
+    }
+
     const payload: ProductInsert = {
       ...form,
       promotional_price: form.promotional_price && form.promotional_price > 0
@@ -158,7 +190,7 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
       return
     }
 
-    onSaved()
+    onSaved(form.is_hero ? 'hero' : 'default')
     onClose()
   }
 
@@ -291,6 +323,82 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
             </button>
           </div>
 
+          {/* ── Exibição na Home ── */}
+          <div className="space-y-2">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-couro-gold/60 font-mono pt-1">Exibição na Home</p>
+
+            {/* Toggle Hero */}
+            <div className="flex items-center justify-between p-3 border border-couro-gold/20 rounded bg-couro-gold/5">
+              <div className="flex items-center gap-2">
+                <Star className="w-3.5 h-3.5 text-couro-gold flex-shrink-0" />
+                <div>
+                  <p className="text-xs font-medium text-couro-ivory">Produto Hero</p>
+                  <p className="text-[10px] text-couro-ivory/40 mt-0.5">Exibido em destaque na seção principal</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={form.is_hero}
+                onClick={() => handleChange('is_hero', !form.is_hero)}
+                className={`relative w-10 h-5.5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
+                  form.is_hero ? 'bg-couro-gold' : 'bg-couro-ivory/15'
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                    form.is_hero ? 'translate-x-4.5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Toggle Destaque */}
+            {(() => {
+              const isLimitReached = featuredCount >= 3 && !form.is_featured
+              return (
+                <div>
+                  <div className={`flex items-center justify-between p-3 border rounded ${
+                    isLimitReached
+                      ? 'border-couro-ivory/10 bg-couro-black/20 opacity-60'
+                      : 'border-couro-gold/20 bg-couro-gold/5'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-couro-gold flex-shrink-0" />
+                      <div>
+                        <p className="text-xs font-medium text-couro-ivory">Vitrine de Destaques <span className="text-couro-ivory/40">(Máx. 3)</span></p>
+                        <p className="text-[10px] text-couro-ivory/40 mt-0.5">Aparece na seção de produtos da home</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={form.is_featured}
+                      disabled={isLimitReached}
+                      onClick={() => !isLimitReached && handleChange('is_featured', !form.is_featured)}
+                      className={`relative w-10 h-5.5 rounded-full transition-colors flex-shrink-0 ${
+                        isLimitReached ? 'cursor-not-allowed' : 'cursor-pointer'
+                      } ${
+                        form.is_featured ? 'bg-couro-gold' : 'bg-couro-ivory/15'
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                          form.is_featured ? 'translate-x-4.5' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                  {isLimitReached && (
+                    <p className="text-[10px] text-amber-500/80 mt-1.5 px-1 leading-relaxed">
+                      ⚠️ Limite de 3 destaques atingido. Edite outro produto e desmarque um destaque para promover este.
+                    </p>
+                  )}
+                </div>
+              )
+            })()}
+          </div>
+
           {/* Image Upload */}
           <div>
             <label className="admin-label">Imagem do Produto</label>
@@ -404,7 +512,15 @@ export function AdminPanel({ session }: AdminPanelProps) {
   const openCreate = () => { setEditing(undefined); setFormOpen(true) }
   const openEdit = (p: Product) => { setEditing(p); setFormOpen(true) }
   const closeForm = () => { setFormOpen(false); setEditing(undefined) }
-  const onSaved = () => { fetchProducts(); showToast('Produto salvo com sucesso!', 'success') }
+  const onSaved = (variant: 'hero' | 'default' = 'default') => {
+    fetchProducts()
+    showToast(
+      variant === 'hero'
+        ? 'Produto definido como Destaque Principal (Hero).'
+        : 'Produto salvo com sucesso!',
+      'success'
+    )
+  }
 
   return (
     <div className="min-h-screen bg-couro-black text-couro-ivory font-sans">
@@ -510,6 +626,18 @@ export function AdminPanel({ session }: AdminPanelProps) {
                         <h3 className="font-serif font-semibold text-sm text-couro-ivory truncate">
                           {product.name}
                         </h3>
+                        {product.is_hero && (
+                          <span className="inline-flex items-center gap-1 bg-amber-500/15 border border-amber-500/40 text-amber-400 text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-mono font-medium flex-shrink-0">
+                            <Star className="w-2.5 h-2.5" />
+                            Hero
+                          </span>
+                        )}
+                        {product.is_featured && (
+                          <span className="inline-flex items-center gap-1 bg-violet-500/15 border border-violet-500/30 text-violet-400 text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-mono font-medium flex-shrink-0">
+                            <Sparkles className="w-2.5 h-2.5" />
+                            Destaque
+                          </span>
+                        )}
                         {product.is_promoted && (
                           <span className="inline-flex items-center gap-1 bg-couro-gold/15 border border-couro-gold/30 text-couro-gold text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-mono font-medium flex-shrink-0">
                             <Tag className="w-2.5 h-2.5" />

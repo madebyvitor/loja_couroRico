@@ -1,10 +1,12 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ChevronDown } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+import type { Product } from '@/lib/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -70,10 +72,27 @@ interface HeroSectionProps {
   isLoading: boolean
 }
 
+// ─── Fallback image ───────────────────────────────────────────────────────────
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=2500&auto=format&fit=crop'
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function HeroSection({ isLoading }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null)
+  const [heroProduct, setHeroProduct] = useState<Product | null>(null)
+
+  // Busca o produto Hero no Supabase
+  useEffect(() => {
+    supabase
+      .from('products')
+      .select('*')
+      .eq('is_hero', true)
+      .maybeSingle()
+      .then(({ data }) => {
+        setHeroProduct(data)
+      })
+  }, [])
 
   // Parallax: Hero image afunda suavemente
   useGSAP(
@@ -104,8 +123,7 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
       <motion.div
         className="absolute inset-0 md:left-1/2 md:w-1/2 z-0 bg-cover bg-center bg-no-repeat will-change-transform origin-center"
         style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=2500&auto=format&fit=crop")',
+          backgroundImage: `url("${heroProduct?.image_url ?? FALLBACK_IMAGE}")`,
         }}
         animate={{ scale: [1.05, 1.1, 1.05], rotate: [-1, 1, -1] }}
         transition={{ duration: 30, ease: "easeInOut", repeat: Infinity }}

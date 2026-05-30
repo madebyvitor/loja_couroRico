@@ -44,17 +44,17 @@ export function CraftsmanshipSection() {
         <div ref={textRef} className="flex-1 space-y-8 order-2 md:order-1">
           <div className="inline-flex items-center gap-3">
             <span className="w-12 h-px bg-couro-gold/50"></span>
-            <span className="text-xs uppercase tracking-[0.3em] text-couro-gold font-mono">Tradição & Herança</span>
+            <span className="text-xs uppercase tracking-[0.3em] text-couro-gold font-mono">ELEGÂNCIA EM CADA DETALHE</span>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-couro-ivory font-bold leading-tight">
-            Precisão em cada <br />
-            <span className="italic text-couro-gold/90 font-light">milímetro</span>
+            O couro como expressão de estilo e <br />
+            <span className="italic text-couro-gold/90 font-light">personalidade</span>
           </h2>
           <p className="text-couro-ivory/70 font-light leading-relaxed text-lg max-w-lg">
-            Cada peça nasce de couro genuíno.
+            Texturas, cores e acabamentos que transformam o cotidiano em algo extraordinário.
           </p>
           <p className="text-couro-ivory/50 font-light leading-relaxed max-w-lg">
-            O luxo não está apenas no que você vê — está no aroma, na textura, no peso equilibrado de cada peça que oferecemos com dedicação absoluta.
+            Mais do que acessórios, cada peça foi escolhida para acompanhar diferentes momentos da vida com autenticidade e sofisticação.
           </p>
           
           <div className="pt-6">
