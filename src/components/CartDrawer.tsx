@@ -9,11 +9,11 @@ import { generateWhatsAppLink } from '@/lib/checkout'
 const drawerVariants = {
   hidden: {
     x: '100%',
-    transition: { ease: [0.76, 0, 0.24, 1], duration: 0.5 },
+    transition: { ease: [0.76, 0, 0.24, 1] as const, duration: 0.5 },
   },
   visible: {
     x: 0,
-    transition: { ease: [0.76, 0, 0.24, 1], duration: 0.5 },
+    transition: { ease: [0.76, 0, 0.24, 1] as const, duration: 0.5 },
   },
 }
 
@@ -34,7 +34,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { ease: [0.76, 0, 0.24, 1], duration: 0.45 },
+    transition: { ease: [0.76, 0, 0.24, 1] as const, duration: 0.45 },
   },
 }
 

@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ShoppingBag, ArrowRight } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import { useStore } from '../store/useStore'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -195,7 +195,7 @@ function DesktopCard({
           src={product.image}
           alt={`${product.name} ${product.subtitle}`}
           className="w-full h-full object-cover object-center block"
-          loading="eager"
+          loading={index === 0 ? 'eager' : 'lazy'}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-couro-black/90 via-transparent to-transparent pointer-events-none" />
         

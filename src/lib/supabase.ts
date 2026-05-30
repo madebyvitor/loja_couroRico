@@ -12,6 +12,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 // ─── Database Types ───────────────────────────────────────────────────────────
 
+export type ProductCategory = 'carteira' | 'bolsa' | 'acessorio' | 'chapeu'
+
 export interface Product {
   id: string
   name: string
@@ -20,6 +22,7 @@ export interface Product {
   promotional_price: number | null
   is_promoted: boolean
   image_url: string | null
+  category: ProductCategory
   created_at: string
 }
 

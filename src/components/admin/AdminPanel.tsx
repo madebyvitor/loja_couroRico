@@ -33,6 +33,7 @@ const emptyForm = (): ProductInsert => ({
   promotional_price: null,
   is_promoted: false,
   image_url: '',
+  category: 'bolsa',
 })
 
 // ─── Toast Notification ───────────────────────────────────────────────────────
@@ -78,6 +79,7 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
           promotional_price: initial.promotional_price,
           is_promoted: initial.is_promoted,
           image_url: initial.image_url ?? '',
+          category: initial.category ?? 'bolsa',
         }
       : emptyForm()
   )
@@ -203,6 +205,22 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
               className="admin-input"
               required
             />
+          </div>
+
+          {/* Categoria */}
+          <div>
+            <label className="admin-label">Categoria *</label>
+            <select
+              value={form.category}
+              onChange={(e) => handleChange('category', e.target.value)}
+              className="admin-input"
+              required
+            >
+              <option value="bolsa">Bolsa</option>
+              <option value="carteira">Carteira</option>
+              <option value="chapeu">Chapéu</option>
+              <option value="acessorio">Acessório</option>
+            </select>
           </div>
 
           {/* Descrição */}

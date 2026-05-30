@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { Product } from '@/lib/supabase'
 
 export interface CartItem {
   id: string
@@ -9,27 +10,54 @@ export interface CartItem {
   image?: string
 }
 
+// ─── Filter type ──────────────────────────────────────────────────────────────
+
+export type CollectionFilter = 'todos' | 'bolsa' | 'carteira' | 'chapeu' | 'acessorio'
+
+// ─── State & Actions ──────────────────────────────────────────────────────────
+
 interface AppState {
+  // Cart
   cart: CartItem[]
   isCartOpen: boolean
+
+  // Catalog
+  products: Product[]
+  activeFilter: CollectionFilter
+  isTransitioning: boolean
 }
 
 interface AppActions {
+  // Cart actions
   addToCart: (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => void
   removeFromCart: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
   toggleCart: (open?: boolean) => void
+
+  // Catalog actions
+  setProducts: (products: Product[]) => void
+  setActiveFilter: (filter: CollectionFilter) => void
+  setTransitioning: (value: boolean) => void
 }
+
+// ─── Derived selector ─────────────────────────────────────────────────────────
+
+/** Filtra produtos client-side — sem re-fetch ao banco */
+export function selectFilteredProducts(state: AppState) {
+  if (state.activeFilter === 'todos') return state.products
+  return state.products.filter((p) => p.category === state.activeFilter)
+}
+
+// ─── Store ────────────────────────────────────────────────────────────────────
 
 export const useStore = create<AppState & AppActions>()(
   persist(
     (set) => ({
-      // Initial State
+      // ── Cart ──────────────────────────────────────────────────────────────
       cart: [],
       isCartOpen: false,
 
-      // Actions
       addToCart: (item) =>
         set((state) => {
           const existingIndex = state.cart.findIndex((cartItem) => cartItem.id === item.id)
@@ -67,9 +95,19 @@ export const useStore = create<AppState & AppActions>()(
         set((state) => ({
           isCartOpen: open !== undefined ? open : !state.isCartOpen,
         })),
+
+      // ── Catalog ───────────────────────────────────────────────────────────
+      products: [],
+      activeFilter: 'todos',
+      isTransitioning: false,
+
+      setProducts: (products) => set({ products }),
+      setActiveFilter: (filter) => set({ activeFilter: filter }),
+      setTransitioning: (value) => set({ isTransitioning: value }),
     }),
     {
       name: 'couro-rico-storage',
+      // Persiste apenas o carrinho — produtos e filtro são efêmeros
       partialize: (state) => ({ cart: state.cart }),
     }
   )
