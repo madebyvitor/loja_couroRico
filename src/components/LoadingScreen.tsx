@@ -95,7 +95,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
                 animate={phase === 'pulse' ? { opacity: [0, 1] } : {}}
                 transition={{ duration: 1.0, delay: 0.8 }}
               >
-                Artesanato de Luxo
+                 Elegância que atravessa o tempo.
               </motion.p>
 
               {/* Linha decorativa abaixo */}

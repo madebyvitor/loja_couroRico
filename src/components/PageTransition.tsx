@@ -60,7 +60,7 @@ export function PageTransition() {
                 COURO RICO
               </span>
               <p className="text-center mt-4 text-[10px] tracking-[0.5em] uppercase text-couro-gold/60 font-mono">
-                Artesanato de Luxo
+                Elegância que atravessa o tempo.
               </p>
               <div className="w-10 h-px bg-couro-gold/50 mx-auto mt-5" />
             </motion.div>

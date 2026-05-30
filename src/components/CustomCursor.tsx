@@ -92,13 +92,11 @@ export function CustomCursor() {
   if (isTouchDevice || prefersReduced) return null
 
   // ── Cálculos do anel magnético ────────────────────────────────────────────
-  // Quando magnético: o anel se expande para cobrir o elemento inteiro
-  const magnetSize = magnet
-    ? Math.max(magnet.w, magnet.h) + 16 // padding de 8px em cada lado
-    : 28
+  // Abordagem minimalista: o anel apenas aumenta de tamanho e segue o mouse
+  const magnetSize = magnet ? 48 : 28
 
-  const ringX = magnet ? magnet.cx - magnetSize / 2 : pos.x - 14
-  const ringY = magnet ? magnet.cy - magnetSize / 2 : pos.y - 14
+  const ringX = pos.x - magnetSize / 2
+  const ringY = pos.y - magnetSize / 2
 
   return (
     <>

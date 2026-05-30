@@ -109,6 +109,21 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
       })
   }, [])
 
+  const handlePriceChange = (field: 'price' | 'promotional_price', rawValue: string) => {
+    const onlyNumbers = rawValue.replace(/\D/g, '')
+    if (!onlyNumbers) {
+      handleChange(field, field === 'promotional_price' ? null : 0)
+      return
+    }
+    const floatValue = parseInt(onlyNumbers, 10) / 100
+    handleChange(field, floatValue)
+  }
+
+  const formatToBRL = (value: number | null | undefined) => {
+    if (!value) return ''
+    return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  }
+
   const handleChange = (field: keyof ProductInsert, value: unknown) => {
     setForm((f) => ({ ...f, [field]: value }))
   }
@@ -272,12 +287,10 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
             <div>
               <label className="admin-label">Preço (R$) *</label>
               <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.price || ''}
-                onChange={(e) => handleChange('price', parseFloat(e.target.value) || 0)}
-                placeholder="0.00"
+                type="text"
+                value={formatToBRL(form.price)}
+                onChange={(e) => handlePriceChange('price', e.target.value)}
+                placeholder="0,00"
                 className="admin-input"
                 required
               />
@@ -285,14 +298,10 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
             <div>
               <label className="admin-label">Preço Promocional (R$)</label>
               <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.promotional_price ?? ''}
-                onChange={(e) =>
-                  handleChange('promotional_price', e.target.value ? parseFloat(e.target.value) : null)
-                }
-                placeholder="0.00"
+                type="text"
+                value={formatToBRL(form.promotional_price)}
+                onChange={(e) => handlePriceChange('promotional_price', e.target.value)}
+                placeholder="0,00"
                 className="admin-input"
               />
             </div>
