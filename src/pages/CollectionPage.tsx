@@ -294,7 +294,8 @@ function FilterBar() {
 // ─── Collection Grid ──────────────────────────────────────────────────────────
 
 function ProductGrid({ filtered, onProductClick }: { filtered: Product[], onProductClick: (p: Product) => void }) {
-  const isLoading = filtered.length === 0 && useStore((s) => s.products.length === 0)
+  const isProductsEmpty = useStore((s) => s.products.length === 0)
+  const isLoading = filtered.length === 0 && isProductsEmpty
 
   if (isLoading) {
     return (
