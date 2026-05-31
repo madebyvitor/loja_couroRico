@@ -1,88 +1,88 @@
-import { motion } from 'motion/react'
-
 /**
  * AtmosphericBackground
  * Blobs com blur extremo que flutuam lentamente em loop infinito,
  * simulando as luzes rebatidas de um estúdio fotográfico de luxo.
  * Posicionado em z-[-1], abaixo de todo conteúdo.
+ *
+ * Otimização: animações 100% CSS (@keyframes) — zero JavaScript no loop de render.
  */
 export function AtmosphericBackground() {
   return (
-    <div
-      className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none"
-      aria-hidden="true"
-    >
-      {/* Blob 1 — couro-brown, canto superior esquerdo → flutua para o centro */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          width: '45vw',
-          height: '45vw',
-          background: 'radial-gradient(circle, #2B1D16 0%, transparent 70%)',
-          filter: 'blur(120px)',
-          opacity: 0.18,
-          top: '-10%',
-          left: '-5%',
-        }}
-        animate={{
-          x: ['0%', '12%', '4%', '0%'],
-          y: ['0%', '10%', '18%', '0%'],
-        }}
-        transition={{
-          duration: 20,
-          ease: 'linear',
-          repeat: Infinity,
-        }}
-      />
+    <>
+      <style>{`
+        @keyframes blob1 {
+          0%,100% { transform: translate(0%, 0%); }
+          33%      { transform: translate(12%, 10%); }
+          66%      { transform: translate(4%, 18%); }
+        }
+        @keyframes blob2 {
+          0%,100% { transform: translate(0%, 0%); }
+          33%      { transform: translate(-15%, -12%); }
+          66%      { transform: translate(-6%, -20%); }
+        }
+        @keyframes blob3 {
+          0%,100% { transform: translate(-50%, -50%); }
+          33%      { transform: translate(-42%, -58%); }
+          66%      { transform: translate(-56%, -44%); }
+        }
+        .atm-blob {
+          position: absolute;
+          border-radius: 9999px;
+          pointer-events: none;
+          will-change: transform;
+        }
+      `}</style>
 
-      {/* Blob 2 — couro-gold, canto inferior direito → flutua para o centro-esquerda */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          width: '40vw',
-          height: '40vw',
-          background: 'radial-gradient(circle, #C8A96B 0%, transparent 70%)',
-          filter: 'blur(140px)',
-          opacity: 0.12,
-          bottom: '-5%',
-          right: '-10%',
-        }}
-        animate={{
-          x: ['0%', '-15%', '-6%', '0%'],
-          y: ['0%', '-12%', '-20%', '0%'],
-        }}
-        transition={{
-          duration: 17,
-          ease: 'linear',
-          repeat: Infinity,
-          delay: 3,
-        }}
-      />
+      <div
+        className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none"
+        aria-hidden="true"
+      >
+        {/* Blob 1 — couro-brown, canto superior esquerdo */}
+        <div
+          className="atm-blob"
+          style={{
+            width: '45vw',
+            height: '45vw',
+            background: 'radial-gradient(circle, #2B1D16 0%, transparent 70%)',
+            filter: 'blur(120px)',
+            opacity: 0.18,
+            top: '-10%',
+            left: '-5%',
+            animation: 'blob1 20s linear infinite',
+          }}
+        />
 
-      {/* Blob 3 — couro-caramel, centro — leve flutuação circular */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          width: '30vw',
-          height: '30vw',
-          background: 'radial-gradient(circle, #9A6A42 0%, transparent 70%)',
-          filter: 'blur(160px)',
-          opacity: 0.08,
-          top: '35%',
-          left: '35%',
-          transform: 'translate(-50%, -50%)',
-        }}
-        animate={{
-          x: ['0%', '8%', '-6%', '0%'],
-          y: ['0%', '-8%', '6%', '0%'],
-        }}
-        transition={{
-          duration: 15,
-          ease: 'linear',
-          repeat: Infinity,
-          delay: 7,
-        }}
-      />
-    </div>
+        {/* Blob 2 — couro-gold, canto inferior direito */}
+        <div
+          className="atm-blob"
+          style={{
+            width: '40vw',
+            height: '40vw',
+            background: 'radial-gradient(circle, #C8A96B 0%, transparent 70%)',
+            filter: 'blur(140px)',
+            opacity: 0.12,
+            bottom: '-5%',
+            right: '-10%',
+            animation: 'blob2 17s linear infinite 3s',
+          }}
+        />
+
+        {/* Blob 3 — couro-caramel, centro */}
+        <div
+          className="atm-blob"
+          style={{
+            width: '30vw',
+            height: '30vw',
+            background: 'radial-gradient(circle, #9A6A42 0%, transparent 70%)',
+            filter: 'blur(160px)',
+            opacity: 0.08,
+            top: '35%',
+            left: '35%',
+            animation: 'blob3 15s linear infinite 7s',
+          }}
+        />
+      </div>
+    </>
   )
 }
+

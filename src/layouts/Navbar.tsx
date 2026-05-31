@@ -10,8 +10,10 @@ import { useStore } from '@/store/useStore'
  * - Glassmorphism dinâmico: transparente no topo, glass após 50px
  */
 export function Navbar() {
-  const { cart, toggleCart, toggleMenu } = useStore()
-  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0)
+  // Seletores atômicos: cada hook só escuta o slice que realmente usa
+  const cartItemCount = useStore((s) => s.cart.reduce((t, i) => t + i.quantity, 0))
+  const toggleCart = useStore((s) => s.toggleCart)
+  const toggleMenu = useStore((s) => s.toggleMenu)
 
   const [hidden, setHidden] = useState(false)
   const [hasScrolled, setHasScrolled] = useState(false)

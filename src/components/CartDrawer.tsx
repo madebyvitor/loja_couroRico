@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { AnimatePresence } from 'motion/react'
 import { motion } from 'motion/react'
 import { useStore } from '@/store/useStore'
@@ -41,17 +42,23 @@ const itemVariants = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function CartDrawer() {
-  const {
-    cart,
-    isCartOpen,
-    toggleCart,
-    updateQuantity,
-    removeFromCart,
-    clearCart,
-  } = useStore()
+  // Seletores atômicos: re-render apenas quando o slice específico muda
+  const cart = useStore((s) => s.cart)
+  const isCartOpen = useStore((s) => s.isCartOpen)
+  const toggleCart = useStore((s) => s.toggleCart)
+  const updateQuantity = useStore((s) => s.updateQuantity)
+  const removeFromCart = useStore((s) => s.removeFromCart)
+  const clearCart = useStore((s) => s.clearCart)
 
-  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0)
-  const cartTotalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0)
+  // Cálculos derivados memoizados — só recalculam quando o cart muda
+  const cartItemCount = useMemo(
+    () => cart.reduce((total, item) => total + item.quantity, 0),
+    [cart]
+  )
+  const cartTotalPrice = useMemo(
+    () => cart.reduce((total, item) => total + item.price * item.quantity, 0),
+    [cart]
+  )
 
   const handleCheckout = () => {
     if (cart.length === 0) return

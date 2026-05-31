@@ -461,7 +461,7 @@ export function CollectionPage() {
               </em>
             </h1>
             <p className="text-sm text-couro-ivory/45 font-light max-w-md mx-auto leading-relaxed">
-              Cada peça é criada à mão com couro genuíno de alta procedência. Uma curadoria de elegância atemporal para quem reconhece a diferença.
+              Uma seleção de bolsas, carteiras e acessórios em couro escolhidos para quem valoriza qualidade, elegância e estilo atemporal.
             </p>
           </motion.div>
         </section>

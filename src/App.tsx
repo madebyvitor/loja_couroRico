@@ -1,7 +1,6 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
-import { useState } from 'react'
 
 // Layouts
 import { Navbar } from '@/layouts/Navbar'

@@ -61,7 +61,7 @@ function useIsMobile() {
 // ─── Layout MOBILE: cards verticais ─────────────────────────────────────────────────────────────
 
 function MobileShowcase() {
-  const { addToCart } = useStore()
+  const addToCart = useStore((s) => s.addToCart)
   const { products, loading } = useFeaturedProducts()
 
   return (
@@ -201,7 +201,7 @@ function DesktopCard({
   product: Product
   index: number
 }) {
-  const { addToCart } = useStore()
+  const addToCart = useStore((s) => s.addToCart)
   const accent = accentByCategory(product.category ?? '')
 
   return (

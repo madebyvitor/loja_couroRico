@@ -71,7 +71,7 @@ export function CraftsmanshipSection() {
             <div 
               ref={imageRef}
               className="absolute inset-[-15%] bg-cover bg-center"
-              style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1596541571477-9bf17b81923e?q=80&w=1200&auto=format&fit=crop")' }}
+              style={{ backgroundImage: 'url("src/assets/hat.jpeg")' }}
             />
             {/* Inner elegant shadow */}
             <div className="absolute inset-0 shadow-[inset_0_0_50px_rgba(11,11,11,0.5)] pointer-events-none" />

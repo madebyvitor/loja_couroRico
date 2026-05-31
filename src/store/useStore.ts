@@ -48,12 +48,17 @@ interface AppActions {
   setTransitioning: (value: boolean) => void
 }
 
-// ─── Derived selector ─────────────────────────────────────────────────────────
+// ─── Derived selectors ────────────────────────────────────────────────────────
 
 /** Filtra produtos client-side — sem re-fetch ao banco */
 export function selectFilteredProducts(state: AppState) {
   if (state.activeFilter === 'todos') return state.products
   return state.products.filter((p) => p.category === state.activeFilter)
+}
+
+/** Total monetário do carrinho — centralizado para evitar duplicação nos componentes */
+export function selectCartTotal(state: AppState) {
+  return state.cart.reduce((total, item) => total + item.price * item.quantity, 0)
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────

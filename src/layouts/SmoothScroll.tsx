@@ -7,14 +7,16 @@ interface SmoothScrollProps {
   children: ReactNode
 }
 
-// Pausa o scroll quando o carrinho estiver aberto
+// Pausa o scroll quando o carrinho estiver aberto ou na rota /admin-panel
 const ScrollController = () => {
   const isCartOpen = useStore((state) => state.isCartOpen)
   const lenis = useLenis()
 
   useEffect(() => {
     if (!lenis) return
-    if (isCartOpen) {
+    // Desativa o smooth scroll no admin e quando o carrinho está aberto
+    const isAdminRoute = window.location.pathname === '/admin-panel'
+    if (isCartOpen || isAdminRoute) {
       lenis.stop()
     } else {
       lenis.start()
