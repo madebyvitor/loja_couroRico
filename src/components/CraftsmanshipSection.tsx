@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import hatImage from '../assets/hat.jpeg';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -71,7 +72,7 @@ export function CraftsmanshipSection() {
             <div 
               ref={imageRef}
               className="absolute inset-[-15%] bg-cover bg-center"
-              style={{ backgroundImage: 'url("src/assets/hat.jpeg")' }}
+              style={{ backgroundImage: `url(${hatImage})` }}
             />
             {/* Inner elegant shadow */}
             <div className="absolute inset-0 shadow-[inset_0_0_50px_rgba(11,11,11,0.5)] pointer-events-none" />
