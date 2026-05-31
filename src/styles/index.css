@@ -88,7 +88,17 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  cursor: none; /* Custom cursor ativo */
+  cursor: none; /* Custom cursor ativo — desativado no mobile abaixo */
+}
+
+/* Restaura cursor padrão em dispositivos touch (sem mouse fino) */
+@media (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+  * {
+    cursor: auto !important;
+  }
 }
 
 html {

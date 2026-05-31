@@ -21,6 +21,9 @@ interface AppState {
   cart: CartItem[]
   isCartOpen: boolean
 
+  // Menu
+  isMenuOpen: boolean
+
   // Catalog
   products: Product[]
   activeFilter: CollectionFilter
@@ -34,6 +37,10 @@ interface AppActions {
   updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
   toggleCart: (open?: boolean) => void
+
+  // Menu actions
+  toggleMenu: () => void
+  closeMenu: () => void
 
   // Catalog actions
   setProducts: (products: Product[]) => void
@@ -57,6 +64,9 @@ export const useStore = create<AppState & AppActions>()(
       // ── Cart ──────────────────────────────────────────────────────────────
       cart: [],
       isCartOpen: false,
+
+      // ── Menu ──────────────────────────────────────────────────────────────
+      isMenuOpen: false,
 
       addToCart: (item) =>
         set((state) => {
@@ -95,6 +105,11 @@ export const useStore = create<AppState & AppActions>()(
         set((state) => ({
           isCartOpen: open !== undefined ? open : !state.isCartOpen,
         })),
+
+      toggleMenu: () =>
+        set((state) => ({ isMenuOpen: !state.isMenuOpen })),
+
+      closeMenu: () => set({ isMenuOpen: false }),
 
       // ── Catalog ───────────────────────────────────────────────────────────
       products: [],

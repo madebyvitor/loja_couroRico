@@ -15,6 +15,7 @@ import { HeroSection } from './components/HeroSection'
 import { StickyShowcase } from './components/StickyShowcase'
 import { CraftsmanshipSection } from './components/CraftsmanshipSection'
 import { CartDrawer } from './components/CartDrawer'
+import { MobileMenu } from './components/MobileMenu'
 
 // Store
 import { useStore } from '@/store/useStore'
@@ -181,6 +182,9 @@ function HomePage() {
 
         {/* Cart Drawer */}
         <CartDrawer />
+
+        {/* Mobile Menu */}
+        <MobileMenu />
       </div>
     </>
   )

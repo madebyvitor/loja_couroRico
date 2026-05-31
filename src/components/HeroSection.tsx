@@ -183,7 +183,7 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
       </motion.div>
 
       {/* ── Conteúdo da Esquerda (Texto) ── */}
-      <div className="flex-1 w-full md:w-1/2 flex flex-col justify-end md:justify-center px-6 md:px-12 lg:px-24 pb-20 md:pb-0 relative z-10 min-h-[100svh]">
+      <div className="flex-1 w-full md:w-1/2 flex flex-col justify-end md:justify-center px-6 md:px-12 lg:px-24 pb-32 md:pb-0 relative z-10 min-h-[100svh]">
         
         {/* Overline — top left no desktop, cima do titulo no mobile */}
         <motion.p

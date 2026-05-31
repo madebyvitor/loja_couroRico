@@ -8,6 +8,7 @@ import { useStore, type CollectionFilter } from '@/store/useStore'
 import { Navbar } from '@/layouts/Navbar'
 import { Footer } from '@/layouts/Footer'
 import { CartDrawer } from '@/components/CartDrawer'
+import { MobileMenu } from '@/components/MobileMenu'
 import { AtmosphericBackground } from '@/components/AtmosphericBackground'
 
 // ─── Label helpers ────────────────────────────────────────────────────────────
@@ -500,6 +501,9 @@ export function CollectionPage() {
 
       {/* Cart Drawer */}
       <CartDrawer />
+
+      {/* Mobile Menu */}
+      <MobileMenu />
 
       {/* Product Detail Drawer */}
       <AnimatePresence>

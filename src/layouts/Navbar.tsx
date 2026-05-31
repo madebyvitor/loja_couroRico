@@ -10,7 +10,7 @@ import { useStore } from '@/store/useStore'
  * - Glassmorphism dinâmico: transparente no topo, glass após 50px
  */
 export function Navbar() {
-  const { cart, toggleCart } = useStore()
+  const { cart, toggleCart, toggleMenu } = useStore()
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0)
 
   const [hidden, setHidden] = useState(false)
@@ -58,6 +58,7 @@ export function Navbar() {
         <button
           id="navbar-menu-btn"
           aria-label="Abrir menu"
+          onClick={toggleMenu}
           className="p-2 rounded-full border border-transparent hover:border-couro-gold/20 hover:bg-couro-gold/5 transition-all group cursor-pointer"
           data-cursor="hover"
         >
