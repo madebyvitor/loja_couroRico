@@ -58,11 +58,7 @@ export function CraftsmanshipSection() {
             Mais do que acessórios, cada peça foi escolhida para acompanhar diferentes momentos da vida com autenticidade e sofisticação.
           </p>
           
-          <div className="pt-6">
-            <button className="text-xs uppercase tracking-[0.2em] text-couro-ivory hover:text-couro-gold border-b border-transparent hover:border-couro-gold transition-all pb-1 font-semibold">
-              Descubra Nossa História
-            </button>
-          </div>
+          
         </div>
 
         {/* Parallax Image Column */}

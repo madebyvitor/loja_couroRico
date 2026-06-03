@@ -9,7 +9,6 @@ import { useStore } from '@/store/useStore'
 const NAV_LINKS = [
   { label: 'Início',      href: '/' },
   { label: 'A Coleção',   href: '/colecao' },
-  { label: 'Nossa História', href: '/historia' },
 ]
 
 // ─── Animation variants ───────────────────────────────────────────────────────
