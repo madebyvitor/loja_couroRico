@@ -29,6 +29,14 @@ const CollectionPage = lazy(() =>
   import('./pages/CollectionPage').then(m => ({ default: m.CollectionPage }))
 )
 
+// Legal pages — code-split
+const TermosPage = lazy(() =>
+  import('./pages/TermosPage').then(m => ({ default: m.TermosPage }))
+)
+const PrivacidadePage = lazy(() =>
+  import('./pages/PrivacidadePage').then(m => ({ default: m.PrivacidadePage }))
+)
+
 // ─── CTA Section ──────────────────────────────────────────────────────────────
 
 function CollectionCTA() {
@@ -225,6 +233,22 @@ function App() {
           element={
             <Suspense fallback={<PageFallback />}>
               <ProtectedRoute />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/termos"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <TermosPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/privacidade"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <PrivacidadePage />
             </Suspense>
           }
         />
