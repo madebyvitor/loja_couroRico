@@ -18,7 +18,10 @@ import {
   UploadCloud,
   Star,
   Sparkles,
+  Eye,
 } from 'lucide-react'
+import { PreviewModal } from './PreviewModal'
+import type { PreviewDraft } from './PreviewModal'
 
 // ─── Props ─────────────────────────────────────────────────────────────────────
 
@@ -97,6 +100,7 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [previewOpen, setPreviewOpen] = useState(false)
 
   // Conta quantos produtos já têm is_featured = true
   useEffect(() => {
@@ -455,6 +459,15 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
               Cancelar
             </button>
             <button
+              type="button"
+              onClick={() => setPreviewOpen(true)}
+              className="flex items-center justify-center gap-1.5 border border-couro-gold/40 hover:border-couro-gold text-couro-gold hover:bg-couro-gold/8 py-2.5 px-4 rounded text-xs uppercase tracking-widest transition-all cursor-pointer"
+              title="Pré-visualizar Design"
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Preview</span>
+            </button>
+            <button
               type="submit"
               disabled={saving}
               className="flex-1 bg-couro-gold hover:bg-couro-caramel text-couro-black font-semibold py-2.5 rounded text-xs uppercase tracking-widest transition-colors disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
@@ -465,6 +478,27 @@ function ProductForm({ initial, onClose, onSaved }: ProductFormProps) {
           </div>
         </form>
       </motion.div>
+
+      {/* ── Preview Modal ── */}
+      <AnimatePresence>
+        {previewOpen && (
+          <PreviewModal
+            draft={{
+              name: form.name || 'Produto sem nome',
+              description: form.description,
+              price: form.price,
+              promotional_price: form.promotional_price,
+              is_promoted: form.is_promoted,
+              is_hero: form.is_hero,
+              is_featured: form.is_featured,
+              category: form.category,
+              details: form.details,
+              imageUrl: imagePreview,
+            } satisfies PreviewDraft}
+            onClose={() => setPreviewOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }

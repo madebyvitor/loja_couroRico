@@ -70,6 +70,8 @@ function splitChars(text: string) {
 interface HeroSectionProps {
   /** Quando false, a animação de reveal dispara */
   isLoading: boolean
+  /** Dados de produto injetados pelo PreviewModal — ignora o fetch do Supabase */
+  previewData?: Product | null
 }
 
 // ─── Fallback image ───────────────────────────────────────────────────────────
@@ -78,12 +80,13 @@ const FALLBACK_IMAGE =
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export function HeroSection({ isLoading }: HeroSectionProps) {
+export function HeroSection({ isLoading, previewData }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const [heroProduct, setHeroProduct] = useState<Product | null>(null)
 
-  // Busca o produto Hero no Supabase
+  // Busca o produto Hero no Supabase — ignorado quando previewData é fornecido
   useEffect(() => {
+    if (previewData !== undefined) return
     supabase
       .from('products')
       .select('*')
@@ -92,7 +95,10 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
       .then(({ data }) => {
         setHeroProduct(data)
       })
-  }, [])
+  }, [previewData])
+
+  // Usa previewData quando disponível, caso contrário usa o produto buscado no Supabase
+  const displayProduct = previewData !== undefined ? previewData : heroProduct
 
   // Parallax: Hero image afunda suavemente
   useGSAP(
@@ -123,7 +129,7 @@ export function HeroSection({ isLoading }: HeroSectionProps) {
       <motion.div
         className="absolute inset-0 md:left-1/2 md:w-1/2 z-0 bg-cover bg-center bg-no-repeat will-change-transform origin-center"
         style={{
-          backgroundImage: `url("${heroProduct?.image_url ?? FALLBACK_IMAGE}")`,
+          backgroundImage: `url("${displayProduct?.image_url ?? FALLBACK_IMAGE}")`,
         }}
         animate={{ scale: [1.05, 1.1, 1.05], rotate: [-1, 1, -1] }}
         transition={{ duration: 30, ease: "easeInOut", repeat: Infinity }}
